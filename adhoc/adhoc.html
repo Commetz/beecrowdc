@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ad-Hoc - Exercícios</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="../imagens/c.png" type="image/png">
+</head>
+<body>
+  <h1>Ad-Hoc - Exercícios</h1>
+
+  <header class="banner">
+    <nav class="categorias-menu">
+      <a class="categoria" href="../index.html">Home</a>
+      <a class="categoria" href="../geral/geral.html">Geral</a>
+      <a class="categoria" href="../iniciante/iniciante.html">Iniciante</a>
+      <a class="categoria" href="../matematica/matematica.html">Matemática</a>
+      <a class="categoria" href="../strings/strings.html">Strings</a>
+      <a class="categoria" href="../estruturas/estruturas.html">Estruturas e Bibliotecas</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="sidebar">
+      <div class="search-box">
+        <input type="text" id="busca" placeholder="Buscar exercício...">
+        <span class="lupa">🔍</span>
+      </div>
+      <ul id="lista-arquivos"></ul>
+    </div>
+
+    <div id="codigo">
+      <button id="copiar-btn">📋</button>
+      <pre id="codigo-conteudo">Selecione um exercício para visualizar o código.</pre>
+    </div>
+  </div>
+
+  <script>
+    const arquivos = ['1026.c', '1030.c', '1031.c'];
+
+    const lista = document.getElementById('lista-arquivos');
+    const busca = document.getElementById('busca');
+    const pre = document.getElementById('codigo-conteudo');
+
+    function renderizarLista(filtro = "") {
+      lista.innerHTML = "";
+      arquivos
+        .filter(nome => nome.includes(filtro))
+        .forEach(arquivo => {
+          const li = document.createElement('li');
+          const btn = document.createElement('button');
+          btn.textContent = arquivo;
+          btn.onclick = () => mostrarCodigo(arquivo);
+          li.appendChild(btn);
+          lista.appendChild(li);
+        });
+    }
+
+    busca.addEventListener('input', () => {
+      renderizarLista(busca.value.trim());
+    });
+
+    async function mostrarCodigo(arquivo) {
+      const response = await fetch(arquivo);
+      if (response.ok) {
+        const codigo = await response.text();
+        pre.textContent = codigo;
+      } else {
+        pre.textContent = 'Erro ao carregar o código.';
+      }
+    }
+
+    document.getElementById("copiar-btn").addEventListener("click", function () {
+      const texto = pre.innerText;
+      navigator.clipboard.writeText(texto).then(() => {
+        this.textContent = "✅";
+        setTimeout(() => this.textContent = "📋", 1500);
+      });
+    });
+
+    renderizarLista();
+  </script>
+</body>
+</html>
